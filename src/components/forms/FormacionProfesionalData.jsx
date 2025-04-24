@@ -21,7 +21,7 @@ const initialForm = {
   observaciones: ''
 }
 
-function FormacionProfesionalData () {
+function FormacionProfesionalData ({ onFormacionesChange }) {
   const formRef = useRef()
   const dispatch = useDispatch()
   const { register, setValue, reset, watch } = useForm()
@@ -37,7 +37,7 @@ function FormacionProfesionalData () {
   const [isLoading, setIsLoading] = useState(true)
   const [loadingFormaciones] = useState(false)
   const [reloadKey, setReloadKey] = useState(0)
-  const [isFormacionRequired, setIsFormacionRequired] = useState(true)
+  const [, setIsFormacionRequired] = useState(true)
 
   const onReset = () => {
     formRef.current.reset()
@@ -215,6 +215,12 @@ function FormacionProfesionalData () {
     setIsLoading(false)
   }
 
+  const toTitleCase = (str) =>
+    str
+      .split(' ')
+      .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ')
+
   useEffect(() => {
     loadingFormacion()
   }, [])
@@ -243,6 +249,9 @@ function FormacionProfesionalData () {
   useEffect(() => {
     if (formaciones.length > 0) {
       setIsFormacionRequired(false)
+    }
+    if (onFormacionesChange) {
+      onFormacionesChange(formaciones)
     }
   }, [formaciones])
 
@@ -273,7 +282,12 @@ function FormacionProfesionalData () {
                     value={formData.formacion_id}
                     register={register('formacion_id')}
                     title='Tipo de Formacion'
-                    options={formacion.map(f => ({ ...f, formacion: f.formacion.toUpperCase() }))}
+                    options={formacion
+                      .map(f => ({
+                        ...f,
+                        formacion: `${f.formacion.toUpperCase()} - ${toTitleCase(f.nombre)}`
+                      }))
+                      .sort((a, b) => a.formacion.localeCompare(b.formacion))}
                     onChange={handleSelectChange}
                   />
 
@@ -330,14 +344,6 @@ function FormacionProfesionalData () {
                   {isEditing ? 'Terminar Edición' : 'Agregar Formación'}
                 </button>
               </div>
-
-              {isFormacionRequired && (
-                <div className='bg-red-100 text-red-800 p-4 mt-4 rounded-md'>
-                  <p className='text-center font-semibold'>
-                    Debes agregar al menos una formación para continuar.
-                  </p>
-                </div>
-              )}
 
             </Card>
           </div>

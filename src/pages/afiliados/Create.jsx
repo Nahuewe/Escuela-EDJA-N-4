@@ -9,9 +9,11 @@ import DatosPersonalesData from '@/components/forms/DatosPersonalesData'
 import Loading from '@/components/Loading'
 import Button from '@/components/ui/Button'
 import FormacionProfesionalData from '@/components/forms/FormacionProfesionalData'
+import { toast } from 'react-toastify'
 
 export const Create = () => {
   const { id } = useParams()
+  const [formacionesCount, setFormacionesCount] = useState(0)
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(true)
   const [isParamsLoading] = useState(true)
@@ -36,6 +38,10 @@ export const Create = () => {
   })
 
   const onSubmit = async (data) => {
+    if (formacionesCount === 0) {
+      toast.error('Debes agregar al menos una formación profesional antes de guardar.')
+      return
+    }
     if (!activeAfiliado) {
       await startSavingAfiliado(data)
     } else {
@@ -92,7 +98,7 @@ export const Create = () => {
               <div>
                 <DatosPersonalesData register={register} errors={errors} setValue={setValue} watch={watch} isLoadingParent={isLoading} />
 
-                <FormacionProfesionalData register={register} errors={errors} setValue={setValue} watch={watch} isLoadingParent={isLoading} />
+                <FormacionProfesionalData register={register} errors={errors} setValue={setValue} watch={watch} isLoadingParent={isLoading} onFormacionesChange={(arr) => setFormacionesCount(arr.length)} />
               </div>
             )}
 

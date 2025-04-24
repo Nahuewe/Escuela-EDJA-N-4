@@ -96,7 +96,6 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
       setTelefono(persona.telefono || '')
       setEdad(persona.edad || '')
 
-      // Actualización de los pickers de fecha
       setPicker(fechaNacimiento ? [fechaNacimiento] : [])
 
       setFormData({
@@ -133,6 +132,12 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
 
     await handleSexo()
     setIsLoading(false)
+  }
+
+  const handleNumericChange = setter => e => {
+    const value = e.target.value.replace(/\D/g, '')
+    setter(value)
+    setValue(e.target.name, value)
   }
 
   useEffect(() => {
@@ -232,10 +237,10 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
                   className='mayuscula'
                   register={register}
                   id='edad'
-                  type='number'
+                  type='text'
                   value={edad}
                   placeholder='Ingrese la edad de ingreso'
-                  onChange={handleChange(setEdad)}
+                  onChange={handleNumericChange(setEdad)}
                 />
 
                 <SelectForm
@@ -250,10 +255,10 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
                   label='Teléfono'
                   register={register}
                   id='telefono'
-                  type='number'
+                  type='texy'
                   placeholder='Ingrese el número de teléfono'
                   value={telefono}
-                  onChange={handleChange(setTelefono)}
+                  onChange={handleNumericChange(setTelefono)}
                 />
 
                 <div>

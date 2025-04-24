@@ -172,11 +172,15 @@ export const Afiliado = () => {
                     >
                       <option value=''>Filtrar por Formación</option>
                       <option value='-'>Sin Formación</option>
-                      {formaciones.map((formacion) => (
-                        <option key={formacion.id} value={formacion.formacion}>
-                          {formacion.formacion.toUpperCase()}
-                        </option>
-                      ))}
+                      {[...formaciones]
+                        .sort((a, b) =>
+                          a.formacion.localeCompare(b.formacion, 'es', { sensitivity: 'base' })
+                        )
+                        .map((formacion) => (
+                          <option key={formacion.id} value={formacion.formacion}>
+                            {formacion.formacion.toUpperCase()}
+                          </option>
+                        ))}
                     </Select>
 
                     <DeleteModal
